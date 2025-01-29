@@ -38,11 +38,14 @@ class MainViewmodel @Inject constructor(
         responseCode = null
         loading = true
         viewModelScope.launch {
-            val result = badSSLAPI.test()
-
-            responseCode = result.code()
-            loading = false
-
+            try {
+                val result = badSSLAPI.test()
+                responseCode = result.code()
+            } catch (e: Exception) {
+                showMessage = e.message
+            } finally {
+                loading = false
+            }
         }
 
     }
@@ -53,12 +56,17 @@ class MainViewmodel @Inject constructor(
 
 
         viewModelScope.launch {
-            val result = assetsBadSSLAPI.test()
+            try {
+                val result = assetsBadSSLAPI.test()
 
-            responseCode = result.code()
-            loading = false
+                responseCode = result.code()
+            } catch (e: Exception) {
+                showMessage = e.message
 
 
+            } finally {
+                loading = false
+            }
         }
 
     }
@@ -69,16 +77,20 @@ class MainViewmodel @Inject constructor(
         loading = true
 
         viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (systemAlias != null) {
+                    preferencesManager.save(CERTIFICATE_ALIAS, systemAlias)
+                } else {
+                    preferencesManager.clear(CERTIFICATE_ALIAS)
+                }
+                val result = systemBadSSLAPI.test()
 
-            if(systemAlias!=null){
-                preferencesManager.save(CERTIFICATE_ALIAS, systemAlias)
-            }else{
-                preferencesManager.clear(CERTIFICATE_ALIAS)
+                responseCode = result.code()
+            } catch (e: Exception) {
+                showMessage = e.message
+            } finally {
+                loading = false
             }
-            val result = systemBadSSLAPI.test()
-
-            responseCode = result.code()
-            loading = false
 
         }
     }
