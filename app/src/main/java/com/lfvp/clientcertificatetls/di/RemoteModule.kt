@@ -1,5 +1,6 @@
 package com.lfvp.clientcertificatetls.di
 
+import com.lfvp.clientcertificatetls.TEST_URL
 import com.lfvp.clientcertificatetls.remote.AssetsTLSInterceptor
 import com.lfvp.clientcertificatetls.remote.BadSSLAPI
 import com.lfvp.clientcertificatetls.certificate.CertificateProvider
@@ -24,7 +25,7 @@ class RemoteModule {
     @Singleton
     fun provideBaseRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
-            .baseUrl("https://client.badssl.com/")
+            .baseUrl(TEST_URL)
             .addConverterFactory(GsonConverterFactory.create())
     }
 
